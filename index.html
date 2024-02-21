@@ -66,24 +66,26 @@
     const initLikesListeners = () => {
       const likeButtons = document.querySelectorAll('.like-button');
       for (const likeButton of likeButtons) {
-        likeButton.addEventListener('click', () => {
+        likeButton.addEventListener('click', (event) => {
+          event.stopPropagation();
           const index = likeButton.dataset.index
           comments[index].likesCounter += comments[index].isLiked ? -1 : +1;
           comments[index].isLiked = !comments[index].isLiked;
           renderComments();
+          quoteComment();
         })
       }
     }
 
     const renderComments = () => {
       comment.innerHTML = comments.map((comment, index) => {
-        return `<li class="comment">
+        return `<li class="comment" data-index="${index}">
           <div class="comment-header">
             <div id ='name-input'>${comment.name}</div>
             <div>${comment.date}</div>
           </div>
           <div class="comment-body">
-            <div id = 'text-input' class="comment-text">
+            <div id='text-input' class="comment-text">
               ${comment.text}
             </div>
           </div>
@@ -97,8 +99,20 @@
       }).join('');
       initLikesListeners();
     }
-    renderComments(); 
 
+    const quoteComment = () => {
+        const commentElements = document.querySelectorAll(".comment");
+        for (const comment of commentElements) {
+          comment.addEventListener('click', () => {
+          const index = comment.dataset.index;
+          textInput.value = `${comments[index].name} : ${comments[index].text}`;
+          })
+        }
+      }
+
+    renderComments(); 
+    quoteComment();
+    
     addButton.addEventListener('click', () => {
       nameInput.classList.remove('error');
       textInput.classList.remove('error');
@@ -115,14 +129,15 @@
       }
 
       comments.push({
-        name: nameInput.value,
+        name: nameInput.value.replaceAll('>', '&gt;').replaceAll('<', '&lt;'),
         date: currentDate(new Date()),
-        text: textInput.value,
+        text: textInput.value.replaceAll('>', '&gt;').replaceAll('<', '&lt;'),
         likesCounter: 0,
         isLiked: false,
       })
       renderComments();
-      
+      quoteComment();
+
       nameInput.value = '';
       textInput.value = '';
     })
