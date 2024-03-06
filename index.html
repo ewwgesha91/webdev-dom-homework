@@ -69,20 +69,7 @@
     }; 
     getComments();
 
-    let comments = [
-      // { name: 'Глеб Фокин',
-      //   date: '12.02.22 12:18',
-      //   text: 'Это будет первый комментарий на этой странице',
-      //   likesCounter: 3,
-      //   isLiked: false,
-      // },
-      // { name: 'Варвара Н.',
-      //   date: '13.02.22 19:22',
-      //   text: 'Мне нравится как оформлена эта страница! ❤',
-      //   likesCounter: 75,
-      //   isLiked: true,
-      // },
-    ];
+    let comments = [ ];
 
     const initLikesListeners = () => {
       const likeButtons = document.querySelectorAll('.like-button');
@@ -153,26 +140,14 @@
         {method: "POST",
           body: JSON.stringify({
           name: nameInput.value.replaceAll('>', '&gt;').replaceAll('<', '&lt;'),
-          // date: currentDate(new Date()),
           text: textInput.value.replaceAll('>', '&gt;').replaceAll('<', '&lt;'),
-          // likesCounter: 0,
-          // isLiked: false,
         }),
       }).then((response) => {
         const jsonPromise = response.json();
         getComments();
         renderComments();
         });
-
-    
-      // comments.push({
-      //   name: nameInput.value.replaceAll('>', '&gt;').replaceAll('<', '&lt;'),
-      //   date: currentDate(new Date()),
-      //   text: textInput.value.replaceAll('>', '&gt;').replaceAll('<', '&lt;'),
-      //   likesCounter: 0,
-      //   isLiked: false,
-      // })
-      
+              
       nameInput.value = '';
       textInput.value = '';
       renderComments();
