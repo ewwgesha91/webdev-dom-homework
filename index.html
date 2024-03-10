@@ -8,9 +8,10 @@
 
   <body>
     <div class="container">
+      <div id="preloader">Загрузка страницы комментариев...</div>
       <ul id = 'comment' class="comments">
       </ul>
-      <div class="add-form">
+      <div id="add-form" class="add-form">
         <input id = 'name-input'
           type="text"
           class="add-form-name"
@@ -26,6 +27,7 @@
           <button id="add-button" class="add-form-button">Написать</button>
         </div>
       </div>
+      <div id="loader">Комментарий добавляется...</div>
     </div>
   </body>
   <style>
@@ -39,6 +41,9 @@
     const textInput = document.getElementById('text-input');
     const addButton = document.getElementById('add-button');
     const comment = document.getElementById('comment');
+    const preloader = document.getElementById('preloader');
+    const addForm = document.getElementById('add-form');
+    const loader = document.getElementById('loader');
     const currentDate = (date) => {
       let day = String(date.getDate()).padStart(2, '0');
       let month = String(date.getMonth() + 1).padStart(2, '0');
@@ -48,11 +53,14 @@
       return `${day}.${month}.${year} ${hour}:${minutes}`;
     };
     
+    loader.style.display = 'none';
+
     const getComments = () => {
-      fetch("https://wedev-api.sky.pro/api/v1/evgeniia-lomakina/comments", {
+      return fetch("https://wedev-api.sky.pro/api/v1/evgeniia-lomakina/comments", {
       method: "GET",
       }).then((response) => {
-        response.json().then((responseData) => {
+        return response.json();
+      }).then((responseData) => {
           const appComments = responseData.comments.map((comment) => {
             return {
               name: comment.author.name,
@@ -64,9 +72,9 @@
           });
           comments = appComments;
           renderComments();
+          preloader.style.display = 'none';
         });
-        });
-    }; 
+        }; 
     getComments();
 
     let comments = [ ];
@@ -76,7 +84,7 @@
       for (const likeButton of likeButtons) {
         likeButton.addEventListener('click', (event) => {
           event.stopPropagation();
-          const index = likeButton.dataset.index
+          const index = likeButton.dataset.index;
           comments[index].likesCounter += comments[index].isLiked ? -1 : +1;
           comments[index].isLiked = !comments[index].isLiked;
           renderComments();
@@ -136,25 +144,31 @@
         return;
       }
       
-      const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/evgeniia-lomakina/comments", 
+      addForm.style.display = 'none';
+      loader.style.display = 'block';
+
+      return fetch("https://wedev-api.sky.pro/api/v1/evgeniia-lomakina/comments", 
         {method: "POST",
           body: JSON.stringify({
           name: nameInput.value.replaceAll('>', '&gt;').replaceAll('<', '&lt;'),
           text: textInput.value.replaceAll('>', '&gt;').replaceAll('<', '&lt;'),
         }),
       }).then((response) => {
-        const jsonPromise = response.json();
-        getComments();
+        return getComments();
+
         renderComments();
+        })
+        .then((responseData) => {
+          nameInput.value = '';
+          textInput.value = '';
+          loader.style.display = 'none';
+          addForm.style.display = 'flex';
+          renderComments();
         });
-              
-      nameInput.value = '';
-      textInput.value = '';
+
       renderComments();
       quoteComment();
     });
-
     renderComments();
-
   </script>
 </html>
