@@ -155,8 +155,6 @@
         }),
       }).then((response) => {
         return getComments();
-
-        renderComments();
         })
         .then((responseData) => {
           nameInput.value = '';
@@ -165,9 +163,6 @@
           addForm.style.display = 'flex';
           renderComments();
         });
-
-      renderComments();
-      quoteComment();
     });
     renderComments();
   </script>
