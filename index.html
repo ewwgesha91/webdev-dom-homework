@@ -59,7 +59,11 @@
       return fetch("https://wedev-api.sky.pro/api/v1/evgeniia-lomakina/comments", {
       method: "GET",
       }).then((response) => {
-        return response.json();
+        if (response.status === 500) {
+          throw new Error('Сервер сломался');
+        } else {
+          return response.json();
+        }
       }).then((responseData) => {
           const appComments = responseData.comments.map((comment) => {
             return {
@@ -74,8 +78,17 @@
           renderComments();
           quoteComment();
           preloader.style.display = 'none';
+        })
+        .catch((error) => {
+           if (error.message === 'Сервер сломался') {
+            alert('Сервер сломался, попробуйте позже.');
+          };
+          if (error.message === 'Failed to fetch') {
+            alert('Проблемы с соединением, попробуйте позже.');
+          }
+          console.warn(error);
         });
-        }; 
+    }; 
     getComments();
 
     let comments = [ ];
@@ -153,18 +166,39 @@
           body: JSON.stringify({
           name: nameInput.value.replaceAll('>', '&gt;').replaceAll('<', '&lt;'),
           text: textInput.value.replaceAll('>', '&gt;').replaceAll('<', '&lt;'),
+          forceError: true,
         }),
       }).then((response) => {
-        return getComments();
+        if (response.status === 400) {
+          throw new Error('Некорректный запрос');
+        } else if (response.status === 500) {
+          throw new Error('Сервер сломался');
+        } else {
+          return getComments();
+        }
         })
         .then((responseData) => {
-          nameInput.value = '';
-          textInput.value = '';
           loader.style.display = 'none';
           addForm.style.display = 'flex';
-          renderComments();
+          nameInput.value = '';
+          textInput.value = '';
+        })
+        .catch((error) => {
+          if (error.message === 'Некорректный запрос') {
+            alert('Имя и комментарий должны быть не короче 3 символов.');
+          };
+           if (error.message === 'Сервер сломался') {
+            alert('Сервер сломался, попробуйте позже.');
+          };
+          if (error.message === 'Failed to fetch') {
+            alert('Проблемы с соединением, попробуйте позже.');
+          }
+          loader.style.display = 'none';
+          addForm.style.display = 'flex';
+          console.warn(error);
         });
     });
     renderComments();
+    quoteComment();
   </script>
 </html>
