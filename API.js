@@ -11,7 +11,7 @@ export const setToken = (newToken) => {
 
 export let user;
 export const setUser = (newUser) => {
-  user = newUser;
+  user = newUser.trim().replaceAll('>', '&gt;').replaceAll('<', '&lt;');
 }
 
 export function get() {

@@ -4,6 +4,7 @@ import { renderLogin } from "./renderLogin.js";
 import { renderComments, addNewComment } from "./render.js";
 
 const textInput = document.getElementById('text-input');
+const preloader = document.getElementById('preloader');
 
 export let comments = [ ];
 
@@ -19,6 +20,7 @@ export const getComments = () => {
         };
       });
       comments = appComments;
+      preloader.style.display = 'none';
       renderComments({comments});
       quoteComment();
       addNewComment();

@@ -1,4 +1,4 @@
-import { getComments, initLikesListeners, quoteComment, comments } from "./main.js";
+import { getComments, initLikesListeners, quoteComment } from "./main.js";
 import { currentDate } from "./date.js";
 import { post, token, user } from "./API.js";
 import { renderLogin } from "./renderLogin.js";
@@ -39,7 +39,7 @@ export const renderComments = ({comments}) => {
           class="add-form-name"
           value="${user}" 
           readonly/>
-        <textarea id = 'text-input'
+        <textarea id = 'add-text'
           type="textarea"
           class="add-form-text"
           placeholder="Введите ваш коментарий"
@@ -76,22 +76,22 @@ export const renderComments = ({comments}) => {
 
 export const addNewComment = () => {
     const addButton = document.getElementById('add-button');
-    // const nameInput = document.getElementById('name-input');
-    const textInput = document.getElementById('text-input');
+    const nameInput = document.getElementById('name-input');
+    const addText = document.getElementById('add-text');
 
     if (addButton) {
       addButton.addEventListener('click', () => {
-        // nameInput.classList.remove('error');
-        textInput.classList.remove('error');
-        if (textInput.value === '') {
-          // nameInput.classList.add('error');
-          textInput.classList.add('error');
+        nameInput.classList.remove('error');
+        addText.classList.remove('error');
+        if (addText.value === '') {
+          nameInput.classList.add('error');
+          addText.classList.add('error');
           return;
-        // } else if (nameInput.value.trim() === '') {
-        //   nameInput.classList.add('error');
-        //   return;
-        } else if (textInput.value === '') {
-          textInput.classList.add('error');
+        } else if (nameInput.value === '') {
+          nameInput.classList.add('error');
+          return;
+        } else if (addText.value === '') {
+          addText.classList.add('error');
           return;
         }
 
@@ -101,19 +101,19 @@ export const addNewComment = () => {
   
         const postComment = () => {
           post({ 
-            // name: nameInput.value.replaceAll('>', '&gt;').replaceAll('<', '&lt;'),
-            text: textInput.value
+            name: nameInput.value,
+            text: addText.value,
           }).then(() => {
             return getComments();
           }).then(() => {
             addButton.disabled = false;
             addButton.textContent = 'Написать';
-            // nameInput.value = '';
-            textInput.value = '';
+            nameInput.value = '';
+            addText.value = '';
           })
           .catch((error) => {
             if (error.message === 'Некорректный запрос') {
-              alert('Имя и комментарий должны быть не короче 3 символов.');
+              alert('Комментарий должен быть не короче 3 символов.');
               addButton.disabled = false;
               addButton.textContent = 'Написать';
             };
