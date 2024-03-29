@@ -157,3 +157,7 @@ body {
     background-color: transparent;
     text-decoration: underline;
   }
+  .render-login-btn {
+    display: flex;
+    justify-content: center;
+  }

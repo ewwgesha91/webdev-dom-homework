@@ -32,7 +32,6 @@ export const renderComments = ({comments}) => {
       <p class='render-login-btn'>Чтобы добавить комментарий, <n id="render-login-btn">авторизуйтесь.</n></p>`
       if (!token) return btnLogin; 
       return `
-      <div class='container'>
       <div id="add-form" class="add-form">
         <input id = 'name-input'
           type="text"
@@ -48,8 +47,6 @@ export const renderComments = ({comments}) => {
         <div class="add-form-row">
           <button id="add-button" class="add-form-button">Написать</button>
         </div>
-      </div>
-      <div id="loader"></div>
       </div>`
     } 
     
@@ -62,7 +59,7 @@ export const renderComments = ({comments}) => {
     }
 
     const appHtml = `
-    <div class="container">
+    <div>
         <ul id = 'comment' class="comments">${commentHtml}</ul>
       ${formHtml()}
     </div>`;
