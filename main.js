@@ -3,7 +3,6 @@ import { get } from "./API.js";
 import { renderLogin } from "./renderLogin.js";
 import { renderComments, addNewComment } from "./render.js";
 
-const textInput = document.getElementById('text-input');
 const preloader = document.getElementById('preloader');
 
 export let comments = [ ];
@@ -57,8 +56,9 @@ export const quoteComment = () => {
     const commentElements = document.querySelectorAll(".comment");
     for (const comment of commentElements) {
       comment.addEventListener('click', () => {
-      const index = comment.dataset.index;
-      textInput.value = `${comments[index].name}: \n${comments[index].text}\n`;
+        const textInput = document.querySelector('.add-form-text');
+        const index = comment.dataset.index;
+        textInput.value = `${comments[index].name}: \n${comments[index].text}\n`;
       })
     }
   }

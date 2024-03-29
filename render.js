@@ -77,10 +77,10 @@ export const renderComments = ({comments}) => {
 export const addNewComment = () => {
     const addButton = document.getElementById('add-button');
     const nameInput = document.getElementById('name-input');
-    const addText = document.getElementById('add-text');
 
     if (addButton) {
       addButton.addEventListener('click', () => {
+        const addText = document.getElementById('add-text');
         nameInput.classList.remove('error');
         addText.classList.remove('error');
         if (addText.value === '') {
