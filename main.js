@@ -22,7 +22,6 @@ export const getComments = () => {
       preloader.style.display = 'none';
       renderComments({comments});
       quoteComment();
-      addNewComment();
     })
     .catch((error) => {
        if (error.message === 'Сервер сломался') {

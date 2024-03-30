@@ -69,6 +69,7 @@ export const renderComments = ({comments}) => {
     actionRenderLoginBtn();   
     initLikesListeners({comments}, {renderComments});
     quoteComment();
+    addNewComment();
   };
 
 export const addNewComment = () => {
