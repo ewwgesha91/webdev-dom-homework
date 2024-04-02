@@ -103,7 +103,8 @@ body {
   }
 
   .add-form-name,
-  .add-form-text {
+  .add-form-text,
+  .input {
     font-size: 16px;
     font-family: Helvetica;
     border-radius: 8px;
@@ -115,7 +116,8 @@ body {
     padding: 11px 22px;
   }
 
-  .add-form-text {
+  .add-form-text,
+  .input {
     margin-top: 12px;
     padding: 22px;
     resize: none;
@@ -126,7 +128,8 @@ body {
     justify-content: flex-end;
   }
 
-  .add-form-button {
+  .add-form-button,
+  .button {
     margin-top: 24px;
     font-size: 24px;
     padding: 10px 20px;
@@ -138,4 +141,23 @@ body {
 
   .add-form-button:hover {
     opacity: 0.9;
+  }
+
+  .form-row {
+    display: flex;
+    flex-direction: column;
+  }
+  .reg {
+    margin-top: 22px;
+    margin-bottom: 12px;
+    text-align: center;
+    color: #ffffff;
+    font-size: 24px;
+    border: none;
+    background-color: transparent;
+    text-decoration: underline;
+  }
+  .render-login-btn {
+    display: flex;
+    justify-content: center;
   }
