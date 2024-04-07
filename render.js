@@ -3,15 +3,16 @@ import { currentDate } from "./date.js";
 import { post, token, user } from "./API.js";
 import { renderLogin } from "./renderLogin.js";
 
-const comment = document.getElementById('comment');
+const comment = document.getElementById("comment");
 
-export const renderComments = ({comments}) => {
-  const appElement = document.getElementById('app');
-    const commentHtml = comments.map((comment, index) => {
+export const renderComments = ({ comments }) => {
+  const appElement = document.getElementById("app");
+  const commentHtml = comments
+    .map((comment, index) => {
       return `<li class="comment" data-index="${index}">
         <div class="comment-header">
           <div id ='name-input'>${comment.name}</div>
-          <div>${currentDate(comment.date)}</div>
+          <div>${comment.date}</div>
         </div>
         <div class="comment-body">
           <div id='text-input' class="comment-text">
@@ -24,14 +25,15 @@ export const renderComments = ({comments}) => {
             <button data-index='${index}' class="like-button ${comment.isLiked ? "-active-like" : ""}"></button>
           </div>
         </div>
-      </li>`
-    }).join('');
+      </li>`;
+    })
+    .join("");
 
-    const formHtml = () => {
-      const btnLogin = `
-      <p class='render-login-btn'>Чтобы добавить комментарий, <n id="render-login-btn">авторизуйтесь.</n></p>`
-      if (!token) return btnLogin; 
-      return `
+  const formHtml = () => {
+    const btnLogin = `
+      <p class='render-login-btn'>Чтобы добавить комментарий, <n id="render-login-btn">авторизуйтесь.</n></p>`;
+    if (!token) return btnLogin;
+    return `
       <div id="add-form" class="add-form">
         <input id = 'name-input'
           type="text"
@@ -47,88 +49,90 @@ export const renderComments = ({comments}) => {
         <div class="add-form-row">
           <button id="add-button" class="add-form-button">Написать</button>
         </div>
-      </div>`
-    } 
-    
-    function actionRenderLoginBtn() {
-      if (token) return;
-      const btn = document.querySelector('.render-login-btn');
-      btn.addEventListener('click', () => {
-        renderLogin();
-      });
-    }
+      </div>`;
+  };
 
-    const appHtml = `
+  function actionRenderLoginBtn() {
+    if (token) return;
+    const btn = document.querySelector(".render-login-btn");
+    btn.addEventListener("click", () => {
+      renderLogin();
+    });
+  }
+
+  const appHtml = `
     <div>
         <ul id = 'comment' class="comments">${commentHtml}</ul>
       ${formHtml()}
     </div>`;
 
-    appElement.innerHTML = appHtml;
+  appElement.innerHTML = appHtml;
 
-    actionRenderLoginBtn();   
-    initLikesListeners({comments}, {renderComments});
-    quoteComment();
-    addNewComment();
-  };
+  actionRenderLoginBtn();
+  initLikesListeners({ comments }, { renderComments });
+  quoteComment();
+  addNewComment();
+};
 
 export const addNewComment = () => {
-    const addButton = document.getElementById('add-button');
-    const nameInput = document.getElementById('name-input');
+  const addButton = document.getElementById("add-button");
+  const nameInput = document.getElementById("name-input");
 
-    if (addButton) {
-      addButton.addEventListener('click', () => {
-        const addText = document.getElementById('add-text');
-        nameInput.classList.remove('error');
-        addText.classList.remove('error');
-        if (addText.value === '') {
-          nameInput.classList.add('error');
-          addText.classList.add('error');
-          return;
-        } else if (nameInput.value === '') {
-          nameInput.classList.add('error');
-          return;
-        } else if (addText.value === '') {
-          addText.classList.add('error');
-          return;
-        }
+  if (addButton) {
+    addButton.addEventListener("click", () => {
+      const addText = document.getElementById("add-text");
+      nameInput.classList.remove("error");
+      addText.classList.remove("error");
+      if (addText.value === "") {
+        nameInput.classList.add("error");
+        addText.classList.add("error");
+        return;
+      } else if (nameInput.value === "") {
+        nameInput.classList.add("error");
+        return;
+      } else if (addText.value === "") {
+        addText.classList.add("error");
+        return;
+      }
 
-        addButton.disabled = true;
-        addButton.textContent = 'Комментарий добавляется...';
-        addButton.classList.remove('hover');
-  
-        const postComment = () => {
-          post({ 
-            name: nameInput.value,
-            text: addText.value,
-          }).then(() => {
+      addButton.disabled = true;
+      addButton.textContent = "Комментарий добавляется...";
+      addButton.classList.remove("hover");
+
+      const postComment = () => {
+        post({
+          name: nameInput.value,
+          text: addText.value,
+        })
+          .then(() => {
             return getComments();
-          }).then(() => {
+          })
+          .then(() => {
             addButton.disabled = false;
-            addButton.textContent = 'Написать';
-            nameInput.value = '';
-            addText.value = '';
+            addButton.textContent = "Написать";
+            nameInput.value = "";
+            addText.value = "";
           })
           .catch((error) => {
-            if (error.message === 'Некорректный запрос') {
-              alert('Комментарий должен быть не короче 3 символов.');
+            if (error.message === "Некорректный запрос") {
+              alert("Комментарий должен быть не короче 3 символов.");
               addButton.disabled = false;
-              addButton.textContent = 'Написать';
-            };
-             if (error.message === 'Сервер сломался') {
-              alert('Сервер сломался, попробуйте позже.');
+              addButton.textContent = "Написать";
+            }
+            if (error.message === "Сервер сломался") {
+              alert("Сервер сломался, попробуйте позже.");
               addButton.disabled = false;
-              addButton.textContent = 'Написать';
-            };
-            if (error.message === 'Failed to fetch') {
-              alert('Проблемы с соединением, попробуйте позже.');
+              addButton.textContent = "Написать";
+            }
+            if (error.message === "Failed to fetch") {
+              alert("Проблемы с соединением, попробуйте позже.");
               addButton.disabled = false;
-              addButton.textContent = 'Написать';
+              addButton.textContent = "Написать";
             }
             console.warn(error);
           });
-        }
-        postComment();
-      });
-    };
+      };
+      postComment();
+    });
   }
+};

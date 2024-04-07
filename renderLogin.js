@@ -1,9 +1,10 @@
 import { login, setToken, setUser } from "./API.js";
 import { getComments } from "./main.js";
+import _ from "lodash";
 
 export const renderLogin = () => {
-    const appElement = document.getElementById('app');
-    const loginHtml = `
+  const appElement = document.getElementById("app");
+  const loginHtml = `
     <div class="container">
         <div class = 'add-form'>
             <h3 class='form-title'>Форма входа</h3>
@@ -23,23 +24,26 @@ export const renderLogin = () => {
             <a href="#" id='reg-link' class="reg">Зарегистрироваться</a>               
         </div>
         </div>`;
-    appElement.innerHTML = loginHtml;
+  appElement.innerHTML = loginHtml;
 
-    const buttonElement = document.getElementById('login-button');
-    const loginInputElement = document.getElementById('login-input');
-    const passwordInputElement = document.getElementById('password-input');
+  const buttonElement = document.getElementById("login-button");
+  const loginInputElement = document.getElementById("login-input");
+  const passwordInputElement = document.getElementById("password-input");
 
-    buttonElement.addEventListener('click', () => {
-        login({
-            login: loginInputElement.value,
-            password: passwordInputElement.value,
-        }).then((responseData) => {
-            setToken(responseData.user.token);
-            setUser(responseData.user.name);
-        }).then(() => {
-            getComments();
-        });
-        loginInputElement.value = '';
-        passwordInputElement.value = '';
-    });
-}
+  buttonElement.addEventListener("click", () => {
+    login({
+      login: loginInputElement.value,
+      password: passwordInputElement.value,
+      name: _.capitalize(name),
+    })
+      .then((responseData) => {
+        setToken(responseData.user.token);
+        setUser(responseData.user.name);
+      })
+      .then(() => {
+        getComments();
+      });
+    loginInputElement.value = "";
+    passwordInputElement.value = "";
+  });
+};
